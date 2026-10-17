@@ -1,0 +1,56 @@
+{
+  "points": [
+    {
+      "src": [
+        245,
+        240,
+        220
+      ],
+      "dst": [
+        255,
+        255,
+        255
+      ],
+      "note": "sararmis beyaz -> saf beyaz"
+    },
+    {
+      "src": [
+        130,
+        125,
+        110
+      ],
+      "dst": [
+        128,
+        128,
+        128
+      ],
+      "note": "bozuk gri -> saf gri"
+    },
+    {
+      "src": [
+        15,
+        15,
+        25
+      ],
+      "dst": [
+        0,
+        0,
+        0
+      ],
+      "note": "mavimsi siyah -> saf siyah"
+    },
+    {
+      "src": [
+        60,
+        130,
+        70
+      ],
+      "dst": [
+        50,
+        150,
+        50
+      ],
+      "note": "soluk yesil -> canli yesil"
+    }
+  ]
+}
