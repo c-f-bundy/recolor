@@ -1,0 +1,7 @@
+# Recolor v0.4.0 gereksinimleri
+# Kurulum:  pip install -r requirements.txt
+# (tkinter Python ile birlikte gelir; zenity yalniz Linux'ta istege bagli)
+
+Pillow>=9.0
+numpy>=1.21
+scikit-image>=0.19

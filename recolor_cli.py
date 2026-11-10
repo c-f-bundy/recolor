@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
 """
-Recolor CLI - Komut satirindan renk donusumu uygulama
+Recolor CLI - Komut satirindan renk donusumu uygulama (v0.4.0)
 
 Kullanim ornegi:
 
-  python3 recolor_cli.py \\
-      --input foto.jpg \\
-      --output sonuc.jpg \\
-      --points eslesmeler.json \\
-      --tension 0.5 \\
-      --strength 1.0
+  python3 recolor_cli.py --input foto.jpg --output sonuc.jpg --points eslesmeler.json
 
 Eslesmeler.json formati:
   {
@@ -20,13 +15,13 @@ Eslesmeler.json formati:
     ]
   }
 
-Mod secenekleri:
-  --mode single  (varsayilan): tek slider (tension)
-  --mode dual:                  cift slider (softness + snap)
-
-Dual modda:
-  --softness 0.5  (0=dar etki, 1=genis etki)
+Ayarlar (her biri tek is yapar):
+  --softness 0.5  (0=dar/net etki, 1=yumusak/genis etki)
   --snap 0.0      (0=yapistirma yok, 1=tam palet yapismasi)
+  --strength 1.0  (0=orijinal, 1=tam donusum - opaklik gibi)
+
+Not: v0.3.0'daki --mode ve --tension kaldirildi (gizli snap ile birlikte).
+Buyuk goruntuler parca parca islenir; RAM kullanimi sabit kalir.
 """
 
 import argparse
@@ -118,12 +113,11 @@ ORNEKLER:
   1) Basit kullanim:
     python3 recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json
 
-  2) Tension ayarli:
-    python3 recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json --tension 0.7
+  2) Yumusak genis etki:
+    python3 recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json --softness 0.8
 
-  3) Dual mod (softness + snap):
-    python3 recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json \\
-        --mode dual --softness 0.6 --snap 0.3
+  3) Palet yapismasi (renkler tam palet rengine otursun):
+    python3 recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json --snap 0.4
 
   4) Yari etki (strength=0.5):
     python3 recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json --strength 0.5
@@ -136,14 +130,10 @@ ORNEKLER:
     parser.add_argument('-o', '--output', help='Cikis goruntu dosyasi')
     parser.add_argument('-p', '--points', help='Kontrol noktalari JSON dosyasi')
 
-    parser.add_argument('--mode', choices=['single', 'dual'], default='single',
-                        help="single=tek slider (tension), dual=cift slider (softness+snap)")
-    parser.add_argument('--tension', type=float, default=0.5,
-                        help='Tek slider modunda gerginlik (0=duset, 1=siki) [0-1]')
     parser.add_argument('--softness', type=float, default=0.5,
-                        help='Cift slider modunda etki genisligi (0=dar, 1=genis) [0-1]')
+                        help='Etki genisligi (0=dar/net, 1=yumusak/genis) [0-1]')
     parser.add_argument('--snap', type=float, default=0.0,
-                        help='Cift slider modunda palet yapismasi (0=yok, 1=tam) [0-1]')
+                        help='Palet yapismasi (0=yok, 1=tam) [0-1]')
     parser.add_argument('--strength', type=float, default=1.0,
                         help='Etki gucu - opaklik gibi (0=orijinal, 1=tam donusum) [0-1]')
 
@@ -185,20 +175,15 @@ ORNEKLER:
     warp = ColorWarp(
         source_colors=src_colors,
         target_colors=tgt_colors,
-        mode=args.mode,
-        tension=args.tension,
         softness=args.softness,
         snap=args.snap,
     )
-    print(f"  Mode: {args.mode}")
-    if args.mode == 'single':
-        print(f"  Tension: {args.tension:.2f}")
-    else:
-        print(f"  Softness: {args.softness:.2f}, Snap: {args.snap:.2f}")
-    print(f"  Strength: {args.strength:.2f}")
+    print(f"  Softness (etki genisligi): {args.softness:.2f}")
+    print(f"  Snap (yapisma): {args.snap:.2f}")
+    print(f"  Strength (etki gucu): {args.strength:.2f}")
     print(f"  Sigma (etki yaricapi): {warp.sigma:.2f}")
 
-    # 4) Donusumu uygula
+    # 4) Donusumu uygula (buyuk goruntuler otomatik parca parca islenir)
     print("Donusum uygulaniyor...")
     result = warp.apply(img_array, strength=args.strength)
 
