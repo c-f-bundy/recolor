@@ -5,7 +5,7 @@
 ![License](https://img.shields.io/badge/License-AGPL--3.0-blue)
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
 ![GUI](https://img.shields.io/badge/GUI-Tkinter-informational)
-![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey)
+![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey)
 
 ---
 
@@ -34,30 +34,87 @@ Recolor takes the opposite approach. You define a handful of **match points** �
 - **CLI** — same engine for scripted pipelines
 - **Only three knobs** — `softness`, `snap`, `strength`
 - **Constant memory** — huge images are processed in tiles
-- **Native dialogs** — Linux file dialogs (zenity) that open in the right folder
+- **Native dialogs** — Linux system dialogs (zenity) that open in the right folder; on Windows and macOS the clean built-in dialogs are used automatically
 
 ## Installation
 
-Requires **Python 3.9+** (tkinter comes bundled with Python on Linux).
+Requires **Python 3.9+**. Recolor is plain Python and runs on **Linux, Windows and macOS** — the dependencies (`Pillow`, `numpy`, `scikit-image`) ship with installers for all three.
+
+Install everything inside a **virtual environment**. This is the standard, healthy way to run Python tools: it keeps Recolor's packages isolated from your system. Most modern Linux distributions (Debian, Ubuntu, Fedora, Pop!_OS...) deliberately refuse plain `pip install` on the system Python — a venv is the clean answer, and it works the same way on every OS.
+
+### Linux
+
+    # one-time only, if the venv module is missing (Debian/Ubuntu family):
+    sudo apt install python3-venv
 
     # 1. Get the code
     git clone https://github.com/c-f-bundy/recolor.git
     cd recolor
     # (or download and unzip the latest release)
 
-    # 2. Install dependencies
+    # 2. Create and activate the virtual environment
+    python3 -m venv venv
+    source venv/bin/activate
+
+    # 3. Install dependencies
     pip install -r requirements.txt
 
-    # 3. Run the GUI
-    python3 recolor_gui.py
+    # 4. Run
+    python recolor_gui.py
 
-Notes:
-- `zenity` is optional and only used for the native file dialogs on Linux (preinstalled on most distros).
-- Keep your `.gpl` palettes in the `palettes/` folder next to the scripts.
+### Windows
+
+Install Python from python.org and tick **"Add python.exe to PATH"** during setup (tkinter is included).
+
+    # 1. Get the code (Git for Windows) — or download and unzip the latest release
+    git clone https://github.com/c-f-bundy/recolor.git
+    cd recolor
+
+    # 2. Create and activate the virtual environment (Command Prompt)
+    python -m venv venv
+    venv\Scripts\activate
+
+    # 3. Install dependencies
+    pip install -r requirements.txt
+
+    # 4. Run
+    python recolor_gui.py
+
+PowerShell users: activate with `venv\Scripts\Activate.ps1` (if Windows blocks it, run this once: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`).
+
+### macOS
+
+Tkinter is included in the Python installer from python.org. If you use Homebrew Python instead, add it with `brew install python-tk`.
+
+    # 1. Get the code
+    git clone https://github.com/c-f-bundy/recolor.git
+    cd recolor
+
+    # 2. Create and activate the virtual environment
+    python3 -m venv venv
+    source venv/bin/activate
+
+    # 3. Install dependencies
+    pip install -r requirements.txt
+
+    # 4. Run
+    python recolor_gui.py
+
+### Everyday use
+
+Each time you open a new terminal, activate the venv first, then run:
+
+    source venv/bin/activate      # Linux / macOS
+    venv\Scripts\activate         # Windows
+
+    python recolor_gui.py         # GUI
+    python recolor_cli.py --help  # command line
+
+`deactivate` returns you to the normal shell. `zenity` (optional, Linux only) enables the native file dialogs; Windows and macOS automatically use the built-in ones instead. Keep your `.gpl` palettes in the `palettes/` folder next to the scripts.
 
 ## Quick start (GUI)
 
-1. Run `python3 recolor_gui.py`.
+1. Activate the venv, then run `python recolor_gui.py`.
 2. Open a photo — or a whole folder for batch work.
 3. Click a color in the photo, or set one with the RGB sliders: that's your **source**.
 4. Click a color in the palette: that's its **target**. Repeat for a few key colors.
@@ -76,20 +133,22 @@ Keyboard shortcuts (single image view):
 
 ## Command line
 
+Run these inside the activated virtual environment:
+
     # basic
-    python3 recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json
+    python recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json
 
     # softer, wider effect
-    python3 recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json --softness 0.8
+    python recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json --softness 0.8
 
     # colors snap harder onto their targets
-    python3 recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json --snap 0.4
+    python recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json --snap 0.4
 
     # half-strength result, like an opacity slider
-    python3 recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json --strength 0.5
+    python recolor_cli.py -i foto.jpg -o sonuc.jpg -p eslesmeler.json --strength 0.5
 
     # create a template points file to edit
-    python3 recolor_cli.py --sample points_ornek.json
+    python recolor_cli.py --sample points_ornek.json
 
 | Option | Meaning | Range (default) |
 | --- | --- | --- |
@@ -110,7 +169,7 @@ A points file is plain JSON — `src` is the color you have, `dst` is the color 
       ]
     }
 
-A bare list without the `"points"` wrapper is accepted too. Generate an empty template with `python3 recolor_cli.py --sample points_ornek.json`.
+A bare list without the `"points"` wrapper is accepted too. Generate an empty template with `python recolor_cli.py --sample points_ornek.json`.
 
 ## Folders
 
