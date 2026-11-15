@@ -1,10 +1,28 @@
-venv/
+# --- Python ---
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
 *.egg-info/
+venv/
+.venv/
 .env
-.DS_Store
-*.jpg
-*.png
+
+# --- Yerel calisma klasorleri (repoya girmez) ---
+input/
+output/
+palettes/
+test_output/
 sonuc.*
+
+# --- Uretilen gorseller: varsayilan olarak haric ---
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# --- ...ama belge klasorleri serbest (README ekran goruntuleri) ---
+!docs/**
+!screenshots/**
+
+# --- Isletim sistemi curpu ---
+.DS_Store
+Thumbs.db
